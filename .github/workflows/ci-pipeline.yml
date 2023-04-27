@@ -58,7 +58,7 @@ jobs:
 
     #Uploda test result regarding of uni test pass or fail
     - if: success() || failure()
-      uses: actions/upload-arifact@v3
+      uses: actions/upload-artifact@v3
       with:
         name: unit-test-${{ github.sha }}
         path: reports/report.xml
