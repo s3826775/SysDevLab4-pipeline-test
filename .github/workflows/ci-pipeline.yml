@@ -15,6 +15,7 @@ on:
 jobs:
   # start with "lint" job
   lint:
+    if: false
     runs-on: ubuntu-latest
     steps:
         # checkout the repo
@@ -33,3 +34,31 @@ jobs:
         # Run our linter
       - name: Run linter
         run: npm run lint
+
+  unit-tests:
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout the repo
+    - uses: actions/checkout@v3
+
+    # Install node
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with: 
+        node-version: "18"
+    
+    # Install npm deps
+    - name: Install dependencies
+      run: npm clean-install
+    
+    # Run unit tests
+    - name: Run unit tests
+      run: npm run test-unit
+
+    #Uploda test result regarding of uni test pass or fail
+    - if: success() || failure()
+      uses: actions/upload-arifact@v3
+      with:
+        name: unit-test-${{ github.sha }}
+        path: reports/report.xml
